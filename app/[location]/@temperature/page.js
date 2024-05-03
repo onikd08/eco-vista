@@ -1,8 +1,15 @@
+import NotFound from "@/components/NotFound";
 import TemperatureComponent from "@/components/TemperatureComponent";
+import { resolveLocationInfo } from "@/lib/getLocationInfo";
 
-export default function TemperaturePage({
+export default async function TemperaturePage({
   params: { location },
-  searchParams: { latitude, longitude },
+  searchParams: { longitude, latitude },
 }) {
-  return <TemperatureComponent lat={latitude} lon={longitude} />;
+  const resolve = await resolveLocationInfo(location, latitude, longitude);
+  if (resolve?.lat && resolve?.lon) {
+    return <TemperatureComponent lat={resolve.lat} lon={resolve.lon} />;
+  } else {
+    return <NotFound location={location} />;
+  }
 }
